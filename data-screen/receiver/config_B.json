@@ -1,0 +1,17 @@
+{
+  "local_database": {
+    "host": "localhost",
+    "port": 3306,
+    "user": "DataAnalysis",
+    "password": "pRB8ZcByta5yM6SK",
+    "database": "dataanalysis",
+    "table_name": "BK_DataModel"
+  },
+  "server": {
+    "host": "0.0.0.0",
+    "port": 8888
+  },
+  "sync": {
+    "timeout": 10
+  }
+}

@@ -1,0 +1,581 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0a0e27;
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+}
+
+body.loaded {
+    visibility: visible !important;
+}
+
+/* 导航栏 */
+.main-nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 14, 39, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 1000;
+    padding: 15px 0;
+    box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.nav-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+}
+
+.nav-title {
+    font-size: 1.3em;
+    color: #fff;
+    font-weight: bold;
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-btn {
+    padding: 10px 25px;
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    color: #fff;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.nav-btn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    transform: translateY(-2px);
+}
+
+.nav-btn.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #fff;
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+}
+
+/* 协议页面 */
+.protocol-page {
+    display: none;
+    padding-top: 80px;
+    min-height: 100vh;
+    animation: fadeIn 0.5s ease;
+}
+
+.protocol-page.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* 页面头部 */
+.page-header {
+    text-align: center;
+    padding: 30px 20px;
+    margin-bottom: 30px;
+}
+
+.page-header h2 {
+    font-size: 2.2em;
+    margin-bottom: 10px;
+    text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+.protocol-desc {
+    font-size: 1.1em;
+    opacity: 0.9;
+}
+
+.usb-theme {
+    background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+}
+
+.tcp-theme {
+    background: linear-gradient(135deg, #2196F3 0%, #1565C0 100%);
+}
+
+.udp-theme {
+    background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+}
+
+.modbus-theme {
+    background: linear-gradient(135deg, #9C27B0 0%, #6A1B9A 100%);
+}
+
+/* 数据传输演示区域 */
+.data-transmission-demo {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 30px 40px;
+}
+
+.transmission-container {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    margin-bottom: 30px;
+}
+
+/* 设备样式 */
+.source-device, .target-device, .master-device {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    margin-bottom: 20px;
+}
+
+.device-name {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #fff;
+}
+
+/* 数据队列 */
+.data-queue {
+    min-height: 60px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    padding: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.data-packet {
+    width: 40px;
+    height: 40px;
+    background: #4CAF50;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* 传输路径 */
+.transmission-path {
+    margin: 30px 0;
+    position: relative;
+}
+
+.path-label {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.data-lane {
+    height: 80px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+/* USB数据流 - 连续稳定 */
+.usb-lane .moving-packet {
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    background: linear-gradient(135deg, #4CAF50, #66BB6A);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(76, 175, 80, 0.6);
+    animation: usbMove 2s linear infinite;
+}
+
+@keyframes usbMove {
+    0% { left: -60px; }
+    100% { left: 100%; }
+}
+
+/* TCP数据包和确认 */
+.tcp-lane {
+    min-height: 120px;
+}
+
+.tcp-lane .moving-packet {
+    position: absolute;
+    width: 60px;
+    height: 40px;
+    background: #2196F3;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(33, 150, 243, 0.5);
+    animation: tcpMoveForward 2s linear;
+}
+
+.tcp-lane .ack-packet {
+    position: absolute;
+    width: 50px;
+    height: 35px;
+    background: #4CAF50;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8em;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+    animation: tcpMoveBackward 2s linear;
+}
+
+@keyframes tcpMoveForward {
+    0% { left: -70px; top: 20px; }
+    100% { left: 100%; top: 20px; }
+}
+
+@keyframes tcpMoveBackward {
+    0% { right: -60px; top: 60px; }
+    100% { right: 100%; top: 60px; }
+}
+
+.tcp-lane .retrans-packet {
+    background: #FF9800;
+    animation: tcpMoveForward 2s linear;
+}
+
+/* UDP数据包 - 可能丢失 */
+.udp-lane .moving-packet {
+    position: absolute;
+    width: 45px;
+    height: 45px;
+    background: #FF9800;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 15px rgba(255, 152, 0, 0.5);
+    animation: udpMove 1.5s linear;
+}
+
+.udp-lane .moving-packet.lost {
+    animation: udpLost 1.5s linear forwards;
+}
+
+@keyframes udpMove {
+    0% { left: -55px; top: 20px; opacity: 1; }
+    100% { left: 100%; top: 20px; opacity: 1; }
+}
+
+@keyframes udpLost {
+    0% { left: -55px; top: 20px; opacity: 1; }
+    50% { left: 50%; top: 20px; opacity: 0.5; transform: scale(0.8); }
+    100% { left: 50%; top: 20px; opacity: 0; transform: scale(0); }
+}
+
+.lost-packets-area {
+    margin-top: 20px;
+    min-height: 60px;
+    background: rgba(244, 67, 54, 0.2);
+    border-radius: 10px;
+    border: 2px dashed rgba(244, 67, 54, 0.5);
+    padding: 15px;
+}
+
+.lost-label {
+    text-align: center;
+    color: #f44336;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.lost-packet {
+    display: inline-block;
+    width: 40px;
+    height: 40px;
+    background: rgba(244, 67, 54, 0.5);
+    border-radius: 8px;
+    margin: 5px;
+    opacity: 0.5;
+    filter: grayscale(100%);
+}
+
+/* MODBUS请求响应 */
+.modbus-container {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modbus-bus {
+    margin: 20px 0;
+}
+
+.bus-label {
+    text-align: center;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    opacity: 0.9;
+}
+
+.request-response-lane {
+    min-height: 100px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.modbus-request {
+    position: absolute;
+    width: 80px;
+    height: 50px;
+    background: #9C27B0;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(156, 39, 176, 0.6);
+    animation: modbusRequest 3s linear;
+}
+
+.modbus-response {
+    position: absolute;
+    width: 80px;
+    height: 50px;
+    background: #FF9800;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.85em;
+    font-weight: bold;
+    color: #fff;
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
+    animation: modbusResponse 3s linear;
+}
+
+@keyframes modbusRequest {
+    0% { left: -90px; top: 20px; }
+    50% { left: 50%; top: 20px; }
+    100% { left: 50%; top: 20px; }
+}
+
+@keyframes modbusResponse {
+    0% { right: -90px; top: 60px; }
+    50% { right: 50%; top: 60px; }
+    100% { right: 50%; top: 60px; }
+}
+
+.slaves-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+}
+
+.slave-device {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 152, 0, 0.2);
+    border: 2px solid #FF9800;
+    border-radius: 15px;
+    transition: all 0.3s ease;
+}
+
+.slave-device.active {
+    background: rgba(255, 152, 0, 0.4);
+    box-shadow: 0 0 20px rgba(255, 152, 0, 0.6);
+}
+
+.slave-status {
+    margin: 10px 0;
+    padding: 8px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    font-size: 0.9em;
+}
+
+.slave-data {
+    margin-top: 10px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #FF9800;
+}
+
+/* 已接收数据 */
+.data-received {
+    margin-top: 15px;
+    padding: 15px;
+    background: rgba(76, 175, 80, 0.2);
+    border-radius: 10px;
+    border: 2px solid #4CAF50;
+}
+
+.received-label {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.received-count {
+    font-size: 2em;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
+/* TCP等待确认和ACK */
+.waiting-acks, .ack-sending {
+    margin-top: 15px;
+    padding: 10px;
+    background: rgba(33, 150, 243, 0.2);
+    border-radius: 10px;
+    min-height: 50px;
+}
+
+.waiting-label, .ack-label {
+    font-size: 0.9em;
+    margin-bottom: 8px;
+    opacity: 0.8;
+}
+
+.waiting-packet {
+    display: inline-block;
+    width: 35px;
+    height: 30px;
+    background: #FF9800;
+    border-radius: 6px;
+    margin: 3px;
+    font-size: 0.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+.ack-packet-small {
+    display: inline-block;
+    width: 35px;
+    height: 30px;
+    background: #4CAF50;
+    border-radius: 6px;
+    margin: 3px;
+    font-size: 0.7em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+}
+
+/* 统计信息 */
+.transmission-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    padding: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.stat-item {
+    text-align: center;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    opacity: 0.8;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.stat-value {
+    font-size: 2em;
+    font-weight: bold;
+    color: #fff;
+    display: block;
+}
+
+.stat-unit {
+    font-size: 0.85em;
+    opacity: 0.7;
+    margin-top: 5px;
+    display: block;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+    .nav-container {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .nav-buttons {
+        width: 100%;
+        justify-content: space-around;
+    }
+
+    .nav-btn {
+        flex: 1;
+        padding: 8px 15px;
+        font-size: 0.9em;
+    }
+
+    .page-header h2 {
+        font-size: 1.6em;
+    }
+
+    .transmission-container {
+        padding: 20px;
+    }
+
+    .slaves-group {
+        grid-template-columns: 1fr;
+    }
+
+    .transmission-stats {
+        grid-template-columns: 1fr;
+    }
+}

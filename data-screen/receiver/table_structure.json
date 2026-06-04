@@ -1,0 +1,435 @@
+{
+  "table_name": "BK_DataModel",
+  "columns": [
+    {
+      "name": "Speed_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "Speed_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "Speed_Z",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "Speed_R",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "positioing_error_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "positioing_error_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "acceleration_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "acceleration_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "acceleration_Z",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "acceleration_R",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_error_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_error_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "fit_error_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "fit_error_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "vibration_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "vibration_Z",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "noise_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "PLC_step",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "absolute_position_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "absolute_position_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "offset_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "offset_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "offset_R",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "Grating_feedback_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "Grating_feedback_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_red_circle_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_red_circle_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_blue_circle_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_blue_circle_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_yellow_square_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_yellow_square_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_blue_square_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "setting_blue_square_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_scanning_pixel_coordinate_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_scanning_pixel_coordinate_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_setting_pixel_coordinate_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_setting_pixel_coordinate_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_scanning_world_coordinate_X",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "visual_scanning_world_coordinate_Y",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "creation_date",
+      "data_type": "datetime",
+      "data_type_full": "DATETIME",
+      "max_length": null,
+      "precision": null,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "x_release_coordinate_PLC",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "y_release_coordinate_PLC",
+      "data_type": "float",
+      "data_type_full": "FLOAT(53)",
+      "max_length": null,
+      "precision": 53,
+      "scale": null,
+      "is_nullable": "YES",
+      "default": null
+    },
+    {
+      "name": "DATA_SEQUENCE",
+      "data_type": "int",
+      "data_type_full": "INT(10,0)",
+      "max_length": null,
+      "precision": 10,
+      "scale": 0,
+      "is_nullable": "NO",
+      "default": null
+    }
+  ]
+}

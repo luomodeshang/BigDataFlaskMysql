@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能贴合分析系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .dashboard-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 100%;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+
+        .card-text {
+            color: #6c757d;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 4rem 0;
+            border-radius: 0 0 20px 20px;
+            margin-bottom: 3rem;
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background-color: var(--light-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1rem;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        footer {
+            background-color: var(--secondary-color);
+            color: white;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="bi bi-cpu"></i> 智能贴合分析系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/"><i class="bi bi-house-door"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/prediction"><i class="bi bi-graph-up"></i> 预测模型</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/yield"><i class="bi bi-percent"></i> 良率分析</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 英雄区域 -->
+    <section class="hero-section text-center">
+        <div class="container">
+            <h1 class="display-4 fw-bold mb-4">智能贴合分析系统</h1>
+            <p class="lead mb-5">先进的数据分析与预测平台，助力提升生产良率与效率</p>
+            <div class="d-flex justify-content-center gap-3">
+                <a href="/prediction" class="btn btn-light btn-lg px-4">开始分析</a>
+                <a href="/yield" class="btn btn-outline-light btn-lg px-4">良率统计</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- 功能卡片 -->
+    <section class="container mb-5">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="dashboard-card card text-center p-4">
+                    <div class="card-icon">
+                        <i class="bi bi-graph-up"></i>
+                    </div>
+                    <h3 class="card-title">误差预测</h3>
+                    <p class="card-text">基于机器学习模型预测贴合误差，提前发现潜在问题</p>
+                    <a href="/prediction" class="btn btn-primary mt-3">进入功能</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card card text-center p-4">
+                    <div class="card-icon">
+                        <i class="bi bi-percent"></i>
+                    </div>
+                    <h3 class="card-title">良率分析</h3>
+                    <p class="card-text">统计分析贴合误差大于10的产品，计算生产良率</p>
+                    <a href="/yield" class="btn btn-primary mt-3">进入功能</a>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="dashboard-card card text-center p-4">
+                    <div class="card-icon">
+                        <i class="bi bi-database"></i>
+                    </div>
+                    <h3 class="card-title">数据管理</h3>
+                    <p class="card-text">历史数据查询与管理，支持多维度数据分析</p>
+                    <a href="#" class="btn btn-primary mt-3">即将推出</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 特性介绍 -->
+    <section class="container mb-5">
+        <h2 class="text-center mb-5">系统特性</h2>
+        <div class="row g-4">
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-speedometer2"></i>
+                </div>
+                <h4>实时分析</h4>
+                <p>基于最新生产数据进行实时分析，快速响应生产异常</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-bar-chart-line"></i>
+                </div>
+                <h4>精准预测</h4>
+                <p>采用机器学习算法，预测精度高达95%以上</p>
+            </div>
+            <div class="col-md-4 text-center">
+                <div class="feature-icon">
+                    <i class="bi bi-shield-check"></i>
+                </div>
+                <h4>质量保障</h4>
+                <p>提前发现潜在质量问题，降低不良品率</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 页脚 -->
+    <footer class="text-center">
+        <div class="container">
+            <div class="mb-4">
+                <a href="#" class="text-white mx-3"><i class="bi bi-house-door-fill"></i></a>
+                <a href="#" class="text-white mx-3"><i class="bi bi-envelope-fill"></i></a>
+                <a href="#" class="text-white mx-3"><i class="bi bi-telephone-fill"></i></a>
+            </div>
+            <p class="mb-0">© 2023 智能贴合分析系统 - 版权所有</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

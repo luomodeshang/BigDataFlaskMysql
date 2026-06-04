@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>工业大数据分析 - 脏数据演示平台</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>工业数据质量演示系统</h1>
+            <p class="subtitle">直观展示工业数据中常见的问题及处理方法</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab-btn active" onclick="showTab('missing')">
+                <span class="tab-icon">📊</span>
+                <span>数据缺失</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('filtering')">
+                <span class="tab-icon">🔧</span>
+                <span>数据去噪</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('outlier')">
+                <span class="tab-icon">⚠️</span>
+                <span>异常数据</span>
+            </button>
+            <button class="tab-btn" onclick="showTab('normalization')">
+                <span class="tab-icon">📈</span>
+                <span>数据统一</span>
+            </button>
+        </nav>
+
+        <!-- 数据缺失演示 -->
+        <div id="missing" class="tab-content active">
+            <div class="card">
+                <h2>📊 数据缺失问题</h2>
+                <div class="explanation-box">
+                    <p class="explanation-text">
+                        <strong>什么是数据缺失？</strong><br>
+                        就像记录本上有些地方忘记填写一样，数据缺失是指某些时刻的数据没有记录下来。
+                    </p>
+                    <p class="explanation-text">
+                        <strong>为什么会缺失？</strong><br>
+                        可能是传感器坏了、网络断了，或者记录时出错了。
+                    </p>
+                    <p class="explanation-text highlight">
+                        <strong>💡 请看下面的对比：</strong><br>
+                        上面的图是完整的数据（一条连续的线），下面的图是有缺失的数据（断断续续的线）。
+                    </p>
+                </div>
+                <div class="chart-section">
+                    <h3 class="chart-title">✅ 正常数据 - 完整连续</h3>
+                    <div class="chart-container">
+                        <canvas id="missingNormalChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-section">
+                    <h3 class="chart-title">❌ 缺失数据 - 断断续续</h3>
+                    <div class="chart-container">
+                        <canvas id="missingDataChart"></canvas>
+                    </div>
+                </div>
+                <div class="info-panel">
+                    <div class="info-item highlight-item">
+                        <span class="label">📋 总共有：</span>
+                        <span id="missingTotal" class="value">-</span>
+                        <span class="unit">个数据点</span>
+                    </div>
+                    <div class="info-item highlight-item">
+                        <span class="label">❌ 缺失了：</span>
+                        <span id="missingCount" class="value">-</span>
+                        <span class="unit">个数据点</span>
+                    </div>
+                    <div class="info-item highlight-item">
+                        <span class="label">📉 缺失比例：</span>
+                        <span id="missingRate" class="value">-</span>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="loadMissingData()">
+                        <span>🔄</span> 重新生成数据
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 数据滤波演示 -->
+        <div id="filtering" class="tab-content">
+            <div class="card">
+                <h2>🔧 数据去噪处理</h2>
+                <div class="explanation-box">
+                    <p class="explanation-text">
+                        <strong>什么是数据噪声？</strong><br>
+                        就像收音机里的杂音一样，传感器采集的数据中也会有一些不真实的波动和干扰。
+                    </p>
+                    <p class="explanation-text">
+                        <strong>为什么要去噪？</strong><br>
+                        噪声会掩盖真实的数据变化，去噪后能更清楚地看到数据的真实趋势。
+                    </p>
+                    <p class="explanation-text highlight">
+                        <strong>💡 请看下面的对比：</strong><br>
+                        绿色线是真实信号（平滑），红色线是带噪声的数据（波动大），蓝色线是去噪后的结果（接近真实信号）。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="filteringChart"></canvas>
+                </div>
+                <div class="info-panel">
+                    <div class="info-item highlight-item">
+                        <span class="label">📋 数据点数：</span>
+                        <span id="filteringCount" class="value">-</span>
+                        <span class="unit">个</span>
+                    </div>
+                    <div class="info-item highlight-item">
+                        <span class="label">🔧 处理方法：</span>
+                        <span class="value">平滑处理（取平均值）</span>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="loadFilteringData()">
+                        <span>🔄</span> 重新生成数据
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 离群值演示 -->
+        <div id="outlier" class="tab-content">
+            <div class="card">
+                <h2>⚠️ 异常数据检测</h2>
+                <div class="explanation-box">
+                    <p class="explanation-text">
+                        <strong>什么是异常数据？</strong><br>
+                        就像人群中突然出现一个特别高或特别矮的人，异常数据是指明显超出正常范围的数据。
+                    </p>
+                    <p class="explanation-text">
+                        <strong>为什么会有异常？</strong><br>
+                        可能是设备出故障了、测量出错了，或者发生了特殊情况。
+                    </p>
+                    <p class="explanation-text highlight">
+                        <strong>💡 请看下面的图：</strong><br>
+                        绿色线是正常数据，红色线包含异常值，黄色点标记出检测到的异常数据。
+                    </p>
+                </div>
+                <div class="chart-container">
+                    <canvas id="outlierChart"></canvas>
+                </div>
+                <div class="info-panel">
+                    <div class="info-item highlight-item">
+                        <span class="label">📊 平均值：</span>
+                        <span id="outlierMean" class="value">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="info-item highlight-item">
+                        <span class="label">📈 正常范围上限：</span>
+                        <span id="outlierUpper" class="value">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="info-item highlight-item">
+                        <span class="label">📉 正常范围下限：</span>
+                        <span id="outlierLower" class="value">-</span>
+                        <span class="unit">°C</span>
+                    </div>
+                    <div class="info-item highlight-item warning">
+                        <span class="label">⚠️ 发现异常：</span>
+                        <span id="outlierCount" class="value">-</span>
+                        <span class="unit">个</span>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="loadOutlierData()">
+                        <span>🔄</span> 重新生成数据
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 归一化演示 -->
+        <div id="normalization" class="tab-content">
+            <div class="card">
+                <h2>📈 数据统一处理</h2>
+                <div class="explanation-box">
+                    <p class="explanation-text">
+                        <strong>为什么要统一数据？</strong><br>
+                        就像把不同货币换算成同一种货币一样，不同传感器的数据单位不同（温度是度、压力是千帕、转速是转/分钟），统一后可以放在一起比较。
+                    </p>
+                    <p class="explanation-text">
+                        <strong>怎么统一？</strong><br>
+                        把不同单位的数据都转换成0到1之间的数字，或者转换成以平均值为中心的标准化数值。
+                    </p>
+                    <p class="explanation-text highlight">
+                        <strong>💡 请选择下面的选项查看效果：</strong><br>
+                        原始数据：不同单位混在一起，看不出趋势<br>
+                        统一后：所有数据都在同一尺度上，便于比较
+                    </p>
+                </div>
+                <div class="normalization-controls">
+                    <label class="control-label">📋 请选择查看方式：</label>
+                    <select id="normalizationMethod" onchange="updateNormalizationChart()">
+                        <option value="original">📊 原始数据（不同单位）</option>
+                        <option value="minmax">📈 统一方法一（0-1范围）</option>
+                        <option value="zscore">📉 统一方法二（标准化）</option>
+                    </select>
+                </div>
+                <div class="chart-container">
+                    <canvas id="normalizationChart"></canvas>
+                </div>
+                <div class="info-panel">
+                    <div class="info-item highlight-item">
+                        <span class="label">📋 包含的数据类型：</span>
+                        <span class="value">温度、压力、湿度、转速</span>
+                    </div>
+                </div>
+                <div class="button-container">
+                    <button class="refresh-btn" onclick="loadNormalizationData()">
+                        <span>🔄</span> 重新生成数据
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
+

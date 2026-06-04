@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>网络协议可视化演示平台</title>
+    <style>
+        body { visibility: hidden; }
+        body.loaded { visibility: visible; }
+    </style>
+    <script>
+        function showBody() {
+            if (document.body) {
+                document.body.classList.add('loaded');
+            } else {
+                setTimeout(showBody, 10);
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" onload="showBody()">
+    <noscript>
+        <style>body { visibility: visible; }</style>
+    </noscript>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="main-nav">
+        <div class="nav-container">
+            <h1 class="nav-title">网络协议数据传输演示</h1>
+            <div class="nav-buttons">
+                <button class="nav-btn active" data-protocol="usb">USB</button>
+                <button class="nav-btn" data-protocol="tcp">TCP</button>
+                <button class="nav-btn" data-protocol="udp">UDP</button>
+                <button class="nav-btn" data-protocol="modbus">MODBUS</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- USB协议页面 -->
+    <div class="protocol-page active" id="usb-page">
+        <div class="page-header usb-theme">
+            <h2>USB协议 - 连续稳定数据流</h2>
+            <p class="protocol-desc">点对点 · 高速 · 稳定传输</p>
+        </div>
+        
+        <div class="data-transmission-demo">
+            <div class="transmission-container">
+                <div class="source-device">
+                    <div class="device-name">主机</div>
+                    <div class="data-queue" id="usb-source-queue"></div>
+                </div>
+                
+                <div class="transmission-path">
+                    <div class="path-label">USB 3.0 总线 (5Gbps)</div>
+                    <div class="data-lane" id="usb-lane">
+                        <!-- 数据包将在这里流动 -->
+                    </div>
+                </div>
+                
+                <div class="target-device">
+                    <div class="device-name">USB设备</div>
+                    <div class="data-received" id="usb-received">
+                        <div class="received-label">已接收数据包</div>
+                        <div class="received-count" id="usb-received-count">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="transmission-stats">
+                <div class="stat-item">
+                    <span class="stat-label">传输速度:</span>
+                    <span class="stat-value" id="usb-speed">0</span>
+                    <span class="stat-unit">Mbps</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">数据包总数:</span>
+                    <span class="stat-value" id="usb-total">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">丢失:</span>
+                    <span class="stat-value" id="usb-lost">0</span>
+                    <span class="stat-unit">(USB不丢包)</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">延迟:</span>
+                    <span class="stat-value" id="usb-latency">0</span>
+                    <span class="stat-unit">ms</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TCP协议页面 -->
+    <div class="protocol-page" id="tcp-page">
+        <div class="page-header tcp-theme">
+            <h2>TCP协议 - 可靠传输机制</h2>
+            <p class="protocol-desc">数据包+确认 · 自动重传 · 保证顺序</p>
+        </div>
+        
+        <div class="data-transmission-demo">
+            <div class="transmission-container">
+                <div class="source-device">
+                    <div class="device-name">客户端</div>
+                    <div class="data-queue" id="tcp-source-queue"></div>
+                    <div class="waiting-acks" id="tcp-waiting-acks">
+                        <div class="waiting-label">等待确认的数据包</div>
+                    </div>
+                </div>
+                
+                <div class="transmission-path">
+                    <div class="path-label">TCP连接 (可靠传输)</div>
+                    <div class="data-lane tcp-lane" id="tcp-lane">
+                        <!-- 数据包和确认将在这里流动 -->
+                    </div>
+                </div>
+                
+                <div class="target-device">
+                    <div class="device-name">服务器</div>
+                    <div class="data-received" id="tcp-received">
+                        <div class="received-label">已接收数据包</div>
+                        <div class="received-count" id="tcp-received-count">0</div>
+                    </div>
+                    <div class="ack-sending" id="tcp-ack-sending">
+                        <div class="ack-label">发送确认(ACK)</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="transmission-stats">
+                <div class="stat-item">
+                    <span class="stat-label">已发送:</span>
+                    <span class="stat-value" id="tcp-sent">0</span>
+                    <span class="stat-unit">数据包</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已确认:</span>
+                    <span class="stat-value" id="tcp-acked">0</span>
+                    <span class="stat-unit">数据包</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">重传次数:</span>
+                    <span class="stat-value" id="tcp-retrans">0</span>
+                    <span class="stat-unit">次</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">可靠性:</span>
+                    <span class="stat-value" id="tcp-reliability">100%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- UDP协议页面 -->
+    <div class="protocol-page" id="udp-page">
+        <div class="page-header udp-theme">
+            <h2>UDP协议 - 快速但可能丢包</h2>
+            <p class="protocol-desc">无确认机制 · 快速发送 · 可能丢失</p>
+        </div>
+        
+        <div class="data-transmission-demo">
+            <div class="transmission-container">
+                <div class="source-device">
+                    <div class="device-name">发送方</div>
+                    <div class="data-queue" id="udp-source-queue"></div>
+                </div>
+                
+                <div class="transmission-path">
+                    <div class="path-label">UDP传输 (无连接)</div>
+                    <div class="data-lane udp-lane" id="udp-lane">
+                        <!-- 数据包将在这里流动，部分会丢失 -->
+                    </div>
+                    <div class="lost-packets-area" id="udp-lost-area">
+                        <div class="lost-label">丢失的数据包</div>
+                    </div>
+                </div>
+                
+                <div class="target-device">
+                    <div class="device-name">接收方</div>
+                    <div class="data-received" id="udp-received">
+                        <div class="received-label">已接收数据包</div>
+                        <div class="received-count" id="udp-received-count">0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="transmission-stats">
+                <div class="stat-item">
+                    <span class="stat-label">已发送:</span>
+                    <span class="stat-value" id="udp-sent">0</span>
+                    <span class="stat-unit">数据包</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">已接收:</span>
+                    <span class="stat-value" id="udp-received-stat">0</span>
+                    <span class="stat-unit">数据包</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">丢失:</span>
+                    <span class="stat-value" id="udp-lost">0</span>
+                    <span class="stat-unit">数据包</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">丢包率:</span>
+                    <span class="stat-value" id="udp-loss-rate">0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODBUS协议页面 -->
+    <div class="protocol-page" id="modbus-page">
+        <div class="page-header modbus-theme">
+            <h2>MODBUS协议 - 主从请求响应</h2>
+            <p class="protocol-desc">主站控制 · 请求-响应 · 工业应用</p>
+        </div>
+        
+        <div class="data-transmission-demo">
+            <div class="transmission-container modbus-container">
+                <div class="master-device">
+                    <div class="device-name">主站</div>
+                    <div class="request-queue" id="modbus-requests">
+                        <div class="request-label">请求队列</div>
+                    </div>
+                </div>
+                
+                <div class="modbus-bus">
+                    <div class="bus-label">MODBUS总线</div>
+                    <div class="request-response-lane" id="modbus-lane">
+                        <!-- 请求和响应将在这里流动 -->
+                    </div>
+                </div>
+                
+                <div class="slaves-group">
+                    <div class="slave-device" data-id="1">
+                        <div class="device-name">从站 #1</div>
+                        <div class="slave-status" id="slave1-status">等待请求</div>
+                        <div class="slave-data" id="slave1-data">寄存器值: 0</div>
+                    </div>
+                    <div class="slave-device" data-id="2">
+                        <div class="device-name">从站 #2</div>
+                        <div class="slave-status" id="slave2-status">等待请求</div>
+                        <div class="slave-data" id="slave2-data">寄存器值: 0</div>
+                    </div>
+                    <div class="slave-device" data-id="3">
+                        <div class="device-name">从站 #3</div>
+                        <div class="slave-status" id="slave3-status">等待请求</div>
+                        <div class="slave-data" id="slave3-data">寄存器值: 0</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="transmission-stats">
+                <div class="stat-item">
+                    <span class="stat-label">请求总数:</span>
+                    <span class="stat-value" id="modbus-requests-total">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">响应总数:</span>
+                    <span class="stat-value" id="modbus-responses-total">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">平均响应时间:</span>
+                    <span class="stat-value" id="modbus-response-time">0</span>
+                    <span class="stat-unit">ms</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">从站数量:</span>
+                    <span class="stat-value" id="modbus-slaves">3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="application/javascript" src="{{ url_for('static', filename='script.js') }}" defer></script>
+</body>
+</html>

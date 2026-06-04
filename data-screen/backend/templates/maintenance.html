@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>设备运维管理平台</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #0c1426 0%, #1a2332 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .maintenance-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* 头部导航 */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 30px;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-left h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            background: linear-gradient(45deg, #00d4ff, #5b73ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .status-indicator {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .status-indicator.normal {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+        }
+
+        .status-indicator.warning {
+            background: linear-gradient(45deg, #FF9800, #f57c00);
+            color: white;
+        }
+
+        .status-indicator.error {
+            background: linear-gradient(45deg, #F44336, #d32f2f);
+            color: white;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .back-btn {
+            padding: 10px 20px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .time-display {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00d4ff;
+        }
+
+        /* 模块选择器 */
+        .module-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px;
+        }
+
+        .module-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .module-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .module-card:hover::before {
+            left: 100%;
+        }
+
+        .module-card:hover {
+            transform: translateY(-5px);
+            border-color: #00d4ff;
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .module-card.active {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        .module-icon {
+            font-size: 32px;
+            color: #00d4ff;
+            margin-bottom: 15px;
+        }
+
+        .module-info h3 {
+            margin: 0 0 8px 0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .module-info p {
+            margin: 0 0 15px 0;
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        .module-status {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .module-status.normal {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .module-status.warning {
+            background: #FF9800;
+            color: white;
+        }
+
+        .module-status.error {
+            background: #F44336;
+            color: white;
+        }
+
+        /* 内容区域 */
+        .content-area {
+            padding: 0 30px 30px;
+        }
+
+        .module-content {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 20px;
+            min-height: 600px;
+        }
+
+        /* 全局预警弹窗 */
+        .global-alert-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .global-alert {
+            background: linear-gradient(135deg, #1a2332 0%, #0c1426 100%);
+            border-radius: 12px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .alert-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .alert-header h3 {
+            margin: 0;
+            color: #ff6b6b;
+            font-size: 20px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #b0b0b0;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .close-btn:hover {
+            color: #fff;
+        }
+
+        .alert-content {
+            margin-bottom: 20px;
+        }
+
+        .alert-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+        }
+
+        .alert-icon {
+            font-size: 20px;
+            margin-top: 2px;
+        }
+
+        .alert-icon.warning {
+            color: #ff9800;
+        }
+
+        .alert-icon.error {
+            color: #f44336;
+        }
+
+        .alert-text h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+            color: #fff;
+        }
+
+        .alert-text p {
+            margin: 0 0 5px 0;
+            color: #b0b0b0;
+            font-size: 14px;
+        }
+
+        .alert-time {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .alert-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+        }
+
+        .btn-primary, .btn-secondary {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #b0b0b0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .module-selector {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .content-area {
+                padding: 0 20px 20px;
+            }
+        }
+
+        /* 加载动画 */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 200px;
+            font-size: 18px;
+            color: #00d4ff;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(0, 212, 255, 0.3);
+            border-top: 4px solid #00d4ff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="maintenance-container">
+        <!-- 头部导航 -->
+        <div class="header">
+            <div class="header-left">
+                <h1>设备运维管理平台</h1>
+                <div class="status-indicator normal" id="overallStatus">
+                    运行正常
+                </div>
+            </div>
+            <div class="header-right">
+                <a href="/" class="back-btn">
+                    <i class="fas fa-arrow-left"></i> 返回大屏
+                </a>
+                <div class="time-display" id="currentTime"></div>
+            </div>
+        </div>
+
+        <!-- 模块选择器 -->
+        <div class="module-selector">
+            <a href="#prediction" class="module-card" onclick="switchModule('prediction')">
+                <div class="module-icon">
+                    <i class="fas fa-chart-line"></i>
+                </div>
+                <div class="module-info">
+                    <h3>预测预警</h3>
+                    <p>设备状态预测与预警管理</p>
+                </div>
+                <div class="module-status normal">正常</div>
+            </a>
+
+            <a href="#yield" class="module-card" onclick="switchModule('yield')">
+                <div class="module-icon">
+                    <i class="fas fa-percentage"></i>
+                </div>
+                <div class="module-info">
+                    <h3>良率分析</h3>
+                    <p>产品质量分析与良率统计</p>
+                </div>
+                <div class="module-status normal">正常</div>
+            </a>
+
+            <a href="#diagnosis" class="module-card" onclick="switchModule('diagnosis')">
+                <div class="module-icon">
+                    <i class="fas fa-stethoscope"></i>
+                </div>
+                <div class="module-info">
+                    <h3>故障诊断</h3>
+                    <p>设备故障诊断与原因分析</p>
+                </div>
+                <div class="module-status normal">正常</div>
+            </a>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="content-area">
+            <div class="module-content" id="moduleContent">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    正在加载运维平台...
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 全局变量
+        let currentModule = 'prediction';
+        let timing = null;
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateTime();
+            timing = setInterval(updateTime, 1000);
+            loadModule('prediction');
+            fetchRealtimeData();
+        });
+
+        // 时间更新
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleString('zh-CN', {
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit'
+            });
+            document.getElementById('currentTime').textContent = timeString;
+        }
+
+        // 切换模块
+        function switchModule(moduleId) {
+            currentModule = moduleId;
+            
+            // 更新模块卡片状态
+            document.querySelectorAll('.module-card').forEach(card => {
+                card.classList.remove('active');
+            });
+            event.target.closest('.module-card').classList.add('active');
+            
+            // 加载模块内容
+            loadModule(moduleId);
+        }
+
+        // 加载模块内容
+        function loadModule(moduleId) {
+            const content = document.getElementById('moduleContent');
+            
+            switch(moduleId) {
+                case 'prediction':
+                    content.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            正在加载预测预警模块...
+                        </div>
+                    `;
+                    // 这里可以加载Vue组件或直接渲染HTML
+                    setTimeout(() => {
+                        content.innerHTML = `
+                            <h2>预测预警系统</h2>
+                            <p>该模块正在开发中，将集成振动监控、噪声检测和预测分析功能。</p>
+                            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <h3>功能预览：</h3>
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    <li>实时振动监控（X轴、Z轴）</li>
+                                    <li>噪声水平检测</li>
+                                    <li>设备状态预测</li>
+                                    <li>预警弹窗提示</li>
+                                </ul>
+                            </div>
+                        `;
+                    }, 1000);
+                    break;
+                    
+                case 'yield':
+                    content.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            正在加载良率分析模块...
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        content.innerHTML = `
+                            <h2>良率分析系统</h2>
+                            <p>该模块正在开发中，将提供产品质量分析和良率统计功能。</p>
+                            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <h3>功能预览：</h3>
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    <li>实时良率统计</li>
+                                    <li>良率趋势分析</li>
+                                    <li>缺陷类型分析</li>
+                                    <li>生产线对比</li>
+                                </ul>
+                            </div>
+                        `;
+                    }, 1000);
+                    break;
+                    
+                case 'diagnosis':
+                    content.innerHTML = `
+                        <div class="loading">
+                            <div class="spinner"></div>
+                            正在加载故障诊断模块...
+                        </div>
+                    `;
+                    setTimeout(() => {
+                        content.innerHTML = `
+                            <h2>故障诊断系统</h2>
+                            <p>该模块正在开发中，将提供设备故障诊断和原因分析功能。</p>
+                            <div style="margin-top: 20px; padding: 20px; background: rgba(255,255,255,0.05); border-radius: 8px;">
+                                <h3>功能预览：</h3>
+                                <ul style="margin-top: 10px; padding-left: 20px;">
+                                    <li>定位误差分析</li>
+                                    <li>坐标数据对比</li>
+                                    <li>视觉误差检测</li>
+                                    <li>机器学习诊断</li>
+                                </ul>
+                            </div>
+                        `;
+                    }, 1000);
+                    break;
+            }
+        }
+
+        // 获取实时数据
+        async function fetchRealtimeData() {
+            try {
+                const response = await fetch('/api/maintenance/realtime');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    // 检查预警
+                    if (data.warnings && data.warnings.length > 0) {
+                        showGlobalAlert(data.warnings);
+                    }
+                }
+            } catch (error) {
+                console.error('获取实时数据失败:', error);
+            }
+        }
+
+        // 显示全局预警
+        function showGlobalAlert(warnings) {
+            const alertHtml = `
+                <div class="global-alert-overlay" onclick="closeGlobalAlert()">
+                    <div class="global-alert" onclick="event.stopPropagation()">
+                        <div class="alert-header">
+                            <h3>⚠️ 系统预警</h3>
+                            <button class="close-btn" onclick="closeGlobalAlert()">×</button>
+                        </div>
+                        <div class="alert-content">
+                            ${warnings.map(warning => `
+                                <div class="alert-item">
+                                    <div class="alert-icon warning">
+                                        <i class="fas fa-exclamation-triangle"></i>
+                                    </div>
+                                    <div class="alert-text">
+                                        <h4>设备预警</h4>
+                                        <p>${warning}</p>
+                                        <span class="alert-time">${new Date().toLocaleTimeString()}</span>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <div class="alert-actions">
+                            <button class="btn-primary" onclick="handleAlert()">立即处理</button>
+                            <button class="btn-secondary" onclick="closeGlobalAlert()">稍后处理</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            document.body.insertAdjacentHTML('beforeend', alertHtml);
+        }
+
+        // 关闭全局预警
+        function closeGlobalAlert() {
+            const overlay = document.querySelector('.global-alert-overlay');
+            if (overlay) {
+                overlay.remove();
+            }
+        }
+
+        // 处理预警
+        function handleAlert() {
+            console.log('处理预警');
+            closeGlobalAlert();
+        }
+
+        // 清理定时器
+        window.addEventListener('beforeunload', function() {
+            if (timing) {
+                clearInterval(timing);
+            }
+        });
+    </script>
+</body>
+</html>
+

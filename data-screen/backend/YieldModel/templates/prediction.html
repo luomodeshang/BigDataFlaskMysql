@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>误差预测 - 智能贴合分析系统</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2c3e50;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--dark-color);
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.5rem;
+        }
+
+        .analysis-card {
+            border: none;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--light-color);
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            border-color: var(--primary-color);
+            padding: 0.5rem 1.5rem;
+        }
+
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
+        }
+
+        .result-card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .plot-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+
+        .plot-img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .stat-item {
+            background-color: var(--light-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .error-message {
+            color: var(--accent-color);
+            font-weight: 500;
+        }
+
+        .loading-spinner {
+            display: none;
+            color: var(--primary-color);
+        }
+    </style>
+</head>
+<body>
+    <!-- 导航栏 -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <i class="bi bi-cpu"></i> 智能贴合分析系统
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/"><i class="bi bi-house-door"></i> 首页</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/prediction"><i class="bi bi-graph-up"></i> 预测模型</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/yield"><i class="bi bi-percent"></i> 良率分析</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 主要内容 -->
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="analysis-card">
+                    <h2 class="card-title"><i class="bi bi-graph-up me-2"></i>误差预测分析</h2>
+
+                    <form id="analysisForm">
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label for="beginTime" class="form-label">开始时间</label>
+                                <input type="datetime-local" class="form-control" id="beginTime" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="endTime" class="form-label">结束时间</label>
+                                <input type="datetime-local" class="form-control" id="endTime" required>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-center">
+                            <button type="submit" class="btn btn-primary">
+                                <span id="submitText">开始分析</span>
+                                <div id="loadingSpinner" class="loading-spinner ms-2 spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </button>
+
+                            <div id="errorAlert" class="error-message" style="display: none;"></div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- 分析结果 -->
+                <div id="resultSection" style="display: none;">
+                    <div class="result-card">
+                        <h3 class="mb-4"><i class="bi bi-clipboard-data me-2"></i>分析结果</h3>
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="stat-item">
+                                    <h5>工件数量</h5>
+                                    <p class="stat-value" id="numPieces">0</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-item">
+                                    <h5>X方向平均误差</h5>
+                                    <p class="stat-value" id="avgErrorX">0.00</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-item">
+                                    <h5>Y方向平均误差</h5>
+                                    <p class="stat-value" id="avgErrorY">0.00</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="stat-item">
+                                    <h5>最大误差</h5>
+                                    <p class="stat-value" id="maxError">0.00</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div id="modelResultsSection" style="display: none;">
+                            <h4 class="mt-4 mb-3">模型预测指标</h4>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="stat-item">
+                                        <h5>X方向RMSE</h5>
+                                        <p class="stat-value" id="rmseX">0.00</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-item">
+                                        <h5>Y方向RMSE</h5>
+                                        <p class="stat-value" id="rmseY">0.00</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-item">
+                                        <h5>X方向R²</h5>
+                                        <p class="stat-value" id="r2X">0.00</p>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="stat-item">
+                                        <h5>Y方向R²</h5>
+                                        <p class="stat-value" id="r2Y">0.00</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 图表展示 -->
+                    <div class="plot-container mt-4">
+                        <h4 class="mb-3"><i class="bi bi-graph-up me-2"></i>预测结果可视化</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div id="plotXContainer">
+                                    <p class="text-muted">X方向误差对比图将显示在这里</p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div id="plotYContainer">
+                                    <p class="text-muted">Y方向误差对比图将显示在这里</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('analysisForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const beginTime = document.getElementById('beginTime').value;
+            const endTime = document.getElementById('endTime').value;
+
+            if (!beginTime || !endTime) {
+                showError('请填写完整的时间范围');
+                return;
+            }
+
+            // 显示加载状态
+            document.getElementById('loadingSpinner').style.display = 'inline-block';
+            document.getElementById('submitText').textContent = '分析中...';
+            document.getElementById('errorAlert').style.display = 'none';
+
+            const formattedBeginTime = formatDateTime(beginTime);
+            const formattedEndTime = formatDateTime(endTime);
+
+            fetch('/analyze', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    begin_time: formattedBeginTime,
+                    end_time: formattedEndTime
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // 隐藏加载状态
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('submitText').textContent = '开始分析';
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    showError(data.error || '分析过程中发生错误');
+                }
+            })
+            .catch(error => {
+                // 隐藏加载状态
+                document.getElementById('loadingSpinner').style.display = 'none';
+                document.getElementById('submitText').textContent = '开始分析';
+
+                showError('请求失败: ' + error.message);
+            });
+        });
+
+        function formatDateTime(datetimeStr) {
+            const dt = new Date(datetimeStr);
+            const pad = num => num.toString().padStart(2, '0');
+            return `${dt.getFullYear()}-${pad(dt.getMonth()+1)}-${pad(dt.getDate())} ${pad(dt.getHours())}:${pad(dt.getMinutes())}:${pad(dt.getSeconds())}`;
+        }
+
+        function displayResults(data) {
+            const stats = data.stats;
+            const modelResults = data.model_results;
+            const plots = data.plots;
+
+            // 显示基础统计信息
+            document.getElementById('numPieces').textContent = stats.num_pieces;
+            document.getElementById('avgErrorX').textContent = stats.avg_fit_error_x.toFixed(2);
+            document.getElementById('avgErrorY').textContent = stats.avg_fit_error_y.toFixed(2);
+            document.getElementById('maxError').textContent = Math.max(stats.max_fit_error_x, stats.max_fit_error_y).toFixed(2);
+
+            // 显示模型结果
+            if (modelResults) {
+                document.getElementById('modelResultsSection').style.display = 'block';
+                document.getElementById('rmseX').textContent = modelResults.rmse_x.toFixed(2);
+                document.getElementById('rmseY').textContent = modelResults.rmse_y.toFixed(2);
+                document.getElementById('r2X').textContent = modelResults.r2_x.toFixed(4);
+                document.getElementById('r2Y').textContent = modelResults.r2_y.toFixed(4);
+            } else {
+                document.getElementById('modelResultsSection').style.display = 'none';
+            }
+
+            // 显示图表
+            if (plots && plots.comparison_x) {
+                document.getElementById('plotXContainer').innerHTML = `
+                    <img src="data:image/png;base64,${plots.comparison_x}" class="plot-img" alt="X方向误差对比">
+                `;
+            }
+
+            if (plots && plots.comparison_y) {
+                document.getElementById('plotYContainer').innerHTML = `
+                    <img src="data:image/png;base64,${plots.comparison_y}" class="plot-img" alt="Y方向误差对比">
+                `;
+            }
+
+            // 显示结果区域
+            document.getElementById('resultSection').style.display = 'block';
+        }
+
+        function showError(message) {
+            const errorAlert = document.getElementById('errorAlert');
+            errorAlert.textContent = message;
+            errorAlert.style.display = 'block';
+        }
+    </script>
+</body>
+</html>
