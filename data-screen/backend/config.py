@@ -27,7 +27,7 @@ DB_CONFIG = {
     'port': int(os.getenv('DB_PORT', 3306)),
     'database': os.getenv('DB_NAME', 'dataAnalysis'),
     'user': os.getenv('DB_USER', 'DataAnalysis'),
-    'password': os.getenv('DB_PASSWORD', 'pRB8ZcByta5yM6SK'),
+    'password': os.getenv('DB_PASSWORD', ''),  # 必须通过环境变量 DB_PASSWORD 设置
     'charset': 'utf8mb4',
 }
 
